@@ -137,13 +137,13 @@ def sparkline_svg(sm: dict, width: int = 300, height: int = 120) -> str:
 
 
 _BOARD_STYLE = """
-.bg{fill:#ffffff}.t{fill:#1c2433}.m{fill:#667085}.f{fill:#e2553f}
-.c-early{fill:#e2553f}.x-early{fill:#ffffff}.c-chronic{fill:#f4b183}.x-chronic{fill:#7a3410}
-.c-late{fill:#cfd8e6}.x-late{fill:#364152}.c-none{fill:#ebe9e3}.c-na{fill:none;stroke:#cfd8e6;stroke-dasharray:3 2}
+.bg{fill:#ffffff}.t{fill:#111827}.m{fill:#6b7280}
+.c-early{fill:#dc2626}.x-early{fill:#ffffff}.c-chronic{fill:#fca5a5}.x-chronic{fill:#7f1d1d}
+.c-late{fill:#d1d5db}.x-late{fill:#374151}.c-none{fill:#f3f4f6}.c-na{fill:none;stroke:#d1d5db;stroke-dasharray:3 2}
 @media (prefers-color-scheme: dark){
-.bg{fill:#0d1117}.t{fill:#e6e9f0}.m{fill:#98a2b3}.f{fill:#f26b55}
-.c-early{fill:#f26b55}.c-chronic{fill:#a35a2c}.x-chronic{fill:#ffe1cc}
-.c-late{fill:#3a4660}.x-late{fill:#d0d7e2}.c-none{fill:#1f2740}.c-na{stroke:#3a4660}}
+.bg{fill:#0d1117}.t{fill:#e6edf3}.m{fill:#9ca3af}
+.c-early{fill:#ef4444}.c-chronic{fill:#7f1d1d}.x-chronic{fill:#fecaca}
+.c-late{fill:#374151}.x-late{fill:#d1d5db}.c-none{fill:#1f2937}.c-na{stroke:#374151}}
 text{font-family:system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif}
 """
 
@@ -186,7 +186,7 @@ def scoreboard_svg(report: dict, cell_text) -> str:
     for i, c in enumerate(crises):
         y = rows_y + i * row_h
         out.append(f'<text class="t" x="16" y="{y + 18}" font-size="14" font-weight="700">{escape(c["short"])}</text>')
-        out.append(f'<text class="f" x="16" y="{y + 33}" font-size="12" font-weight="600">{c["fall_pct"]}%</text>')
+        out.append(f'<text class="m" x="16" y="{y + 33}" font-size="12">{c["fall_pct"]}%</text>')
         for j, s in enumerate(signals):
             cell = c["cells"][s["id"]]
             st, x = cell["state"], left + j * col + gap / 2
