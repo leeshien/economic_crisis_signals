@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Lights today — MacroPulse{% endblock %}
+{% block main %}
+<p class="disclaimer"><strong>Education only — not financial advice.</strong> These are the same fixed rules applied to
+  the latest data. Several lights have been on in normal years without a crash following.</p>
+
+<section class="today-hero">
+  <p class="big"><strong>{{ today.on }} of {{ today.valid }}</strong> lights on</p>
+  <p>At past market peaks, between <strong>{{ today.typical_min }}</strong> and <strong>{{ today.typical_max }}</strong>
+    of {{ today.total }} lights were on (warned or long on).</p>
+  {% if today.valid < today.total %}
+  <p class="muted">{{ today.total - today.valid }} light(s) left out because their data is out of date — see below.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Each light now</h2>
+  <div class="table-scroll">
+  <table class="today-table">
+    <thead><tr><th scope="col">Light</th><th scope="col">Now</th><th scope="col">On since</th><th scope="col">Data as of</th></tr></thead>
+    <tbody>
+    {% for r in today.rows %}
+    <tr class="{% if r.stale %}stale{% endif %}">
+      <th scope="row"><a href="index.html#signal-{{ r.id }}">{{ r.name }}</a></th>
+      <td>{% if r.stale %}<span class="pill cell-na">no current data</span>
+          {% elif r.on %}<span class="pill cell-early">ON</span>
+          {% else %}<span class="pill cell-none">off</span>{% endif %}</td>
+      <td>{{ r.on_since or "—" }}</td>
+      <td>{{ r.as_of }}{% if r.stale %} (out of date){% endif %}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2>The last 36 months</h2>
+  <p>Same timeline as the crash pages, ending at the latest data ({{ today.latest_month }}).</p>
+  <div class="chart-scroll">{{ timeline_svg(today.timeline, "now")|safe }}</div>
+</section>
+{% endblock %}

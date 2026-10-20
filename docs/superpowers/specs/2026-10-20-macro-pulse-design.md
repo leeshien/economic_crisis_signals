@@ -57,20 +57,24 @@ Notes the content must state:
 
 ## 4. Signals (10)
 
-All monthly. Quarterly series are forward-filled to monthly. "Validated" columns come from the
-brainstorming validation run (`research/validation/`), before the back-to-back guard in section 5.
-Numbers = months early; **C** = already on for years; – = not early.
+All monthly. Quarterly series are dated at the quarter's last month, then forward-filled.
+"Lit before peak" = output of `pipeline/` (frozen in `tests/reference/scoreboard.json`), with the
+back-to-back guard. Numbers = months early; **C** = already on for years.
+
+> Correction (2026-10-20): the brainstorming scripts in `research/validation/` mis-scored quarterly
+> series (empty in-between months counted as "off") and had a units bug for debt/GDP. Their
+> corporate-debt, household-debt and profits figures are wrong; the table above supersedes them.
 
 | # | Signal | Group | Source | Rule — light ON when | Lit before peak | False-alarm* |
 |---|---|---|---|---|---|---|
 | 1 | Yield curve inverted | Money & rates | FRED `GS10 − TB3MS` | spread < 0 | 1980·23, 2008·14, 2020·8 | 10% |
-| 2 | Fed hiking fast | Money & rates | FRED `FEDFUNDS` | rate ≥ 1.5 pt above 18 months earlier | 1980·1, 1990·23, 2008·C | 23% |
-| 3 | Inflation high | Prices | FRED `CPIAUCSL` | YoY > 4% | 1980·C, 1990·24, 2022·9 | 32% |
+| 2 | Fed hiking fast | Money & rates | FRED `FEDFUNDS` | rate ≥ 1.5 pt above 18 months earlier | 1980·1, 1990·23; C 2008 | 23% |
+| 3 | Inflation high | Prices | FRED `CPIAUCSL` | YoY > 4% | 1990·24, 2022·9; C 1980 | 32% |
 | 4 | Oil shock | Prices | FRED `WTISPLC` | YoY > +50% | 1980·15, 2000·7, 2022·10 | 11% |
-| 5 | Credit spread widening | Credit | FRED `BAA − GS10` | ≥ 0.5 pt above its 24-month low | 1980·17, 1990·12, 2000·18, 2008·1, 2020·14 | 42% |
-| 6 | Corporate debt build-up | Credit | FRED `BCNSDODNS / GDP` | ratio ≥ 3 pt above 36 months earlier | 1973·24, 1990·24, 2000·23, 2008·9, 2020·22 | 22% |
-| 7 | Stocks expensive | Markets | Shiller `CAPE` | CAPE > 25 | 2008·23; C in 2000, 2020 | 33% |
-| 8 | Profits falling | Real economy | FRED `CP` | YoY < 0 | 1980·7, 1990·12, 2008·9, 2020·19 | 31% |
+| 5 | Credit spread widening | Credit | FRED `BAA − GS10` | ≥ 0.5 pt above its 24-month low | 1980·17, 1990·12, 2000·18, 2008·1, 2020·14; C 1973 | 42% |
+| 6 | Corporate debt build-up | Credit | FRED `BCNSDODNS / GDP` | ratio ≥ 3 pt above 36 months earlier | 2000·18; C 1973, 1990, 2022 | 30% |
+| 7 | Stocks expensive | Markets | Shiller `CAPE` | CAPE > 25 | 2008·23; C 2000, 2020, 2022 | 33% |
+| 8 | Profits falling | Real economy | FRED `CP` | YoY < 0 | 1980·5, 1990·10, 2008·7, 2020·17 | 31% |
 | 9 | Housing slump | Real economy | FRED `HOUST` | 3-month avg YoY ≤ −20% | 1980·11, 2008·12 | 15% |
 | 10 | Factory hours cut | Real economy | FRED `AWHMAN` | ≥ 0.5 h below its 12-month high | 1980·19, 1990·8, 2008·8, 2020·15 | 24% |
 
@@ -144,8 +148,8 @@ regenerated once with the guard, reviewed by the owner, then frozen.
   never depends on color alone. Sticky first column; horizontal scroll on phones.
 - Palette: red `#dc2626` early, pink `#fca5a5` long on, grey `#d1d5db` late, `#f3f4f6` empty;
   S&P line blue. Color tokens on `:root` with a dark-mode variant.
-- Charts drawn client-side with Observable Plot (pinned version from jsDelivr) from small JSON
-  files; no other front-end framework.
+- Charts rendered at build time as inline SVG (web/svg.py) — works offline, no JavaScript; hover
+  text via SVG <title>. (Changed from client-side Observable Plot during implementation.)
 - Plain English everywhere; numbers rounded; jargon defined on first use.
 
 ## 8. Architecture
@@ -159,10 +163,11 @@ macro-pulse-v4/
 │  ├─ fetch.py        FRED CSV endpoint (no API key) + Shiller xls → data/raw/*.csv
 │  ├─ rules.py        signal → monthly bool Series (pure functions)
 │  └─ score.py        cell states, lead times, verdicts, false-alarm rates (pure functions)
-├─ site/
-│  ├─ build.py        writes dist/data/*.json, renders templates → dist/*.html
+├─ web/              (named web/, not site/, to avoid clashing with Python's `site` module)
+│  ├─ build.py        writes dist/data/report.json, renders templates → dist/*.html
 │  ├─ templates/      base, home, crisis, today, method (Jinja2)
-│  └─ static/         timeline.js, scoreboard.js, small-multiples.js, styles.css
+│  ├─ svg.py          timeline + small-multiple charts rendered server-side as inline SVG
+│  └─ static/         styles.css (no JavaScript, no CDN)
 ├─ data/raw/          fetched series, committed
 ├─ research/validation/   brainstorming validation scripts + outputs (reference only)
 ├─ tests/
@@ -172,7 +177,7 @@ macro-pulse-v4/
 Data flow: `fetch → rules → score → build → dist/` → GitHub Pages.
 Each stage is importable and testable alone; `rules.py` and `score.py` do no I/O.
 
-Runtime: Python ≥ 3.8 (server4 has 3.8.10; CI uses 3.12). Dependencies: pandas, requests, xlrd,
+Runtime: Python 3.12 (server4: conda env `py312`; CI: 3.12). Dependencies: pandas, requests, xlrd,
 jinja2, pytest. No API keys.
 
 ## 9. Error handling
@@ -180,7 +185,7 @@ jinja2, pytest. No API keys.
 - `fetch.py` per series: on failure, keep the existing `data/raw` file, log a warning, continue.
   Build never depends on network access.
 - Each series records its last observation date; Lights Today marks a series stale when it is older
-  than 75 days (monthly) or 200 days (quarterly), and excludes it from "X of 10" with a note.
+  than 100 days (monthly) or 200 days (quarterly), measured from the observation date, and excludes it from "X of 10" with a note.
 - Shiller CAPE is known stale (ends 2023-09): historical scoring uses it; Lights Today shows it as
   unavailable.
 - Build fails loudly (non-zero exit) if a crisis has a missing date, a signal references an unknown

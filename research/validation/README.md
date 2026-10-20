@@ -18,3 +18,13 @@ Layout expected by the scripts (pass the folder as the first argument):
 | `validate_all_2022.py` | Same, with 2022 added (no back-to-back guard yet) |
 | `plot_spread.py` | `validation-credit-spread.png` |
 | `plot_scoreboard.py` | `validation-scoreboard.png` |
+
+## Known errors — do not reuse these numbers
+
+- **Quarterly series** (CP, BCNSDODNS, CMDEBT, GDP, USSTHPI, DRTSCILM) were left with empty
+  in-between months; comparing an empty value to a threshold counts as "off", which deflated
+  false-alarm rates (~3x) and created spurious switch-ons.
+- **Debt/GDP units:** debt is in millions, GDP in billions; the first runs compared ratios 1000x
+  too large. `recheck_debt.py`-style fixes still had the quarterly bug.
+
+The authoritative numbers come from `pipeline/` and are frozen in `tests/reference/scoreboard.json`.

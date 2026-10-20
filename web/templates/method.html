@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Method — MacroPulse{% endblock %}
+{% block main %}
+<h1>How this works</h1>
+
+<section>
+  <h2>The rules</h2>
+  <p>Every light has one fixed rule, written down before scoring and applied identically to every crash.
+    The thresholds are common rules of thumb; they were <strong>not adjusted</strong> to make crashes light up.</p>
+  <div class="table-scroll">
+  <table class="method-table">
+    <thead><tr><th scope="col">Light</th><th scope="col">Rule</th><th scope="col">On in normal times*</th></tr></thead>
+    <tbody>
+    {% for s in signals %}
+    <tr><th scope="row">{{ s.name }}</th><td>{{ s.rule }}</td><td>{{ s.false_alarm|round|int }}%</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <p class="muted">* Share of months the light was on between 1972 and 2019 — including years with no crash.</p>
+</section>
+
+<section>
+  <h2>Scoring a crash</h2>
+  <ul>
+    <li><strong>Peak</strong> is the S&amp;P 500's highest close before the fall. Warnings are counted against the
+      market peak, not the official recession start, because investors care about the market.</li>
+    <li><strong>Warned (months early):</strong> the light switched on in the 24 months before the peak and was
+      still on at some point in the final 12 months.</li>
+    <li><strong>Long on:</strong> on in the final 12 months, but switched on more than 24 months before — a
+      long-running condition rather than a fresh warning.</li>
+    <li><strong>Late:</strong> first switched on only after the peak, before the bottom.</li>
+    <li><strong>Back-to-back crashes:</strong> when a crash follows soon after another, lights that switched on
+      within 12 months of the previous bottom are not counted as warnings.</li>
+    <li>All data is monthly. Quarterly figures (GDP, debt, profits) are dated at the end of their quarter.</li>
+  </ul>
+  <p><strong>{{ report.sahm.name }}:</strong> {{ report.sahm.rule }} {{ report.sahm.why }}
+    It is shown on each timeline but not scored.</p>
+</section>
+
+<section>
+  <h2>Limitations</h2>
+  <ul>
+    <li>We use today's revised data, not the figures people actually saw at the time.</li>
+    <li>Different thresholds would give different lead times.</li>
+    <li>Seven crashes is a small sample. The hit rates are illustrations, not statistical proof.</li>
+    <li>The Shiller CAPE data has not been updated since 2023, so that light is unavailable on the Lights today page.</li>
+    <li>2020 was an outside shock; lights that were on then reflect a softening economy, not a forecast of a pandemic.</li>
+  </ul>
+</section>
+{% endblock %}
