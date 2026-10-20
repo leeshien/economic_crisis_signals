@@ -1,42 +1,69 @@
 {% extends "base.html" %}
-{% block title %}Lights today — MacroPulse{% endblock %}
+{% block title %}Lights today — Economic Crisis Signals{% endblock %}
 {% block main %}
+<section class="today-hero">
+  <div>
+    <h1 class="big">{{ today.on }} of {{ today.valid }} <small>lights on</small></h1>
+    <span class="dots">{% for r in today.rows %}<span class="dot {% if r.stale %}dot-na{% elif r.on %}dot-on{% else %}dot-off{% endif %}" title="{{ r.name }}"></span>{% endfor %}</span>
+    <p class="muted">Latest data: {{ today.latest_month }}.
+      {% if today.valid < today.total %}{{ today.total - today.valid }} light left out because its data is out of date.{% endif %}</p>
+  </div>
+  <div class="panel">
+    <strong>How does that compare?</strong>
+    <p class="muted" style="margin:4px 0 0">At the last {{ crises|length }} market peaks, between {{ today.typical_min }} and
+      {{ today.typical_max }} of {{ today.total }} lights were on.</p>
+    {% set w = 100 / today.total %}
+    <div class="scale" role="img" aria-label="{{ today.on }} lights on now; past peaks {{ today.typical_min }} to {{ today.typical_max }}">
+      <div class="scale-track">
+        <div class="scale-band" style="left:{{ today.typical_min * w }}%;width:{{ (today.typical_max - today.typical_min) * w }}%"></div>
+        <div class="scale-now" style="left:{{ today.on * w }}%"></div>
+      </div>
+      <span class="scale-now-label" style="left:{{ today.on * w }}%">now: {{ today.on }}</span>
+      <span class="scale-band-label" style="left:{{ (today.typical_min + today.typical_max) / 2 * w }}%">past peaks</span>
+      <div class="scale-ticks">{% for i in range(today.total + 1) %}<span>{{ i }}</span>{% endfor %}</div>
+    </div>
+  </div>
+</section>
+
 <p class="disclaimer"><strong>Education only — not financial advice.</strong> These are the same fixed rules applied to
   the latest data. Several lights have been on in normal years without a crash following.</p>
 
-<section class="today-hero">
-  <p class="big"><strong>{{ today.on }} of {{ today.valid }}</strong> lights on</p>
-  <p>At past market peaks, between <strong>{{ today.typical_min }}</strong> and <strong>{{ today.typical_max }}</strong>
-    of {{ today.total }} lights were on (warned or long on).</p>
-  {% if today.valid < today.total %}
-  <p class="muted">{{ today.total - today.valid }} light(s) left out because their data is out of date — see below.</p>
-  {% endif %}
-</section>
-
 <section>
   <h2>Each light now</h2>
-  <div class="table-scroll">
-  <table class="today-table">
-    <thead><tr><th scope="col">Light</th><th scope="col">Now</th><th scope="col">On since</th><th scope="col">Data as of</th></tr></thead>
-    <tbody>
+  <p class="section-intro">The latest reading of each light, the level that switches it on, and how far away that is.
+    Charts show the last 3 years: the dashed line is the trigger, and shaded months are when the light was on.</p>
+  <div class="light-cards">
     {% for r in today.rows %}
-    <tr class="{% if r.stale %}stale{% endif %}">
-      <th scope="row"><a href="index.html#signal-{{ r.id }}">{{ r.name }}</a></th>
-      <td>{% if r.stale %}<span class="pill cell-na">no current data</span>
-          {% elif r.on %}<span class="pill cell-early">ON</span>
-          {% else %}<span class="pill cell-none">off</span>{% endif %}</td>
-      <td>{{ r.on_since or "—" }}</td>
-      <td>{{ r.as_of }}{% if r.stale %} (out of date){% endif %}</td>
-    </tr>
+    <article class="card light {% if r.stale %}is-stale{% elif r.on %}is-on{% endif %}">
+      <span class="kind">{{ groups[r.group] }}</span>
+      <div class="light-head">
+        <h4><a href="index.html#signal-{{ r.id }}">{{ r.name }}</a></h4>
+        {% if r.stale %}<span class="status status-na">No current data</span>
+        {% elif r.on %}<span class="status status-on">ON since {{ r.on_since }}</span>
+        {% else %}<span class="status status-off">Off</span>{% endif %}
+      </div>
+      <div class="reading"><span class="value">{{ r.value_text }}</span><span class="when">{{ r.value_month }}</span></div>
+      <p class="metric-label">{{ r.spark.label }}</p>
+      <dl class="trigger">
+        <dt>Switches on</dt><dd>{{ r.trigger_text }}</dd>
+        {% if r.stale %}
+        <dt>Status</dt><dd>Last reading {{ r.value_month }}, too old to count</dd>
+        {% elif r.on %}
+        <dt>Now</dt><dd class="near">{{ r.gap_text }} past the trigger</dd>
+        {% else %}
+        <dt>Distance</dt><dd>must {{ r.direction }} {{ r.gap_text }}</dd>
+        {% endif %}
+      </dl>
+      <p class="detail">{{ r.detail }}</p>
+      {% if not r.stale %}{{ sparkline_svg(r.spark)|safe }}{% endif %}
+    </article>
     {% endfor %}
-    </tbody>
-  </table>
   </div>
 </section>
 
 <section>
   <h2>The last 36 months</h2>
-  <p>Same timeline as the crash pages, ending at the latest data ({{ today.latest_month }}).</p>
-  <div class="chart-scroll">{{ timeline_svg(today.timeline, "now")|safe }}</div>
+  <p class="section-intro">Same timeline as the crash pages, ending at the latest data ({{ today.latest_month }}).</p>
+  <div class="panel chart-scroll">{{ timeline_svg(today.timeline, "now")|safe }}</div>
 </section>
 {% endblock %}

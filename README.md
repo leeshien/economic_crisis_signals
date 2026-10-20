@@ -7,7 +7,7 @@
 ![Scoreboard: which of 10 warning lights came on before each of 7 US stock-market crashes](docs/scoreboard.svg)
 
 *Each row is a crash, each column a warning light. Red = switched on before the market peak (number =
-months early). Pink = already on for years. Grey = fired only after the peak. Blank = did not fire.
+months early). Orange = already on for years. Blue-grey = fired only after the peak. Blank = did not fire.
 The image is rebuilt from the data every week.*
 
 ## What this is

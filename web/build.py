@@ -12,6 +12,7 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
+from config.signals import GROUPS
 from pipeline.load import load_all, RAW_DIR, ROOT
 from pipeline.report import build_report
 from web import svg
@@ -62,7 +63,8 @@ def render(report: dict, out: Path) -> None:
     env = Environment(loader=FileSystemLoader(WEB / "templates"), autoescape=True,
                       undefined=StrictUndefined, trim_blocks=True, lstrip_blocks=True)
     env.globals.update(cell_text=cell_text, cell_title=cell_title,
-                       timeline_svg=svg.timeline_svg, sparkline_svg=svg.sparkline_svg)
+                       timeline_svg=svg.timeline_svg, sparkline_svg=svg.sparkline_svg,
+                       groups=GROUPS)
     if out.exists():
         shutil.rmtree(out)
     (out / "crisis").mkdir(parents=True)

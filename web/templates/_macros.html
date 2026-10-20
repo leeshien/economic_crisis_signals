@@ -7,14 +7,27 @@
 </ul>
 {% endmacro %}
 
-{% macro scoreboard_table(crises, signals, root) %}
+{% macro dots(crisis, signals) %}
+<span class="dots" aria-hidden="true">{% for s in signals %}<span class="dot dot-{{ crisis.cells[s.id].state }}" title="{{ s.name }}"></span>{% endfor %}</span>
+{% endmacro %}
+
+{% macro scoreboard_table(crises, signals, root, groups) %}
 <div class="table-scroll">
 <table class="scoreboard">
+  <colgroup><col class="c-crisis">{% for s in signals %}<col>{% endfor %}<col class="c-count"></colgroup>
   <thead>
+    <tr class="group-row">
+      <th class="blank"></th>
+      {% for gid, gname in groups.items() %}
+      {% set n = signals|selectattr("group", "equalto", gid)|list|length %}
+      {% if n %}<th colspan="{{ n }}" scope="colgroup">{{ gname }}</th>{% endif %}
+      {% endfor %}
+      <th class="blank"></th>
+    </tr>
     <tr>
-      <th scope="col" class="crisis-col">Crash (S&amp;P 500 fall)</th>
+      <th scope="col" class="crisis-col">Crash</th>
       {% for s in signals %}
-      <th scope="col"><a href="{{ root }}index.html#signal-{{ s.id }}">{{ s.name }}</a></th>
+      <th scope="col"><a href="{{ root }}index.html#signal-{{ s.id }}">{{ s.name|replace("-", "‑") }}</a></th>
       {% endfor %}
       <th scope="col">Warned</th>
     </tr>
@@ -32,7 +45,7 @@
     </tr>
     {% endfor %}
     <tr class="false-alarm-row">
-      <th scope="row" class="crisis-col">On in normal times<span class="fall">% of months, 1972–2019</span></th>
+      <th scope="row" class="crisis-col">On in normal times<span class="sub">% of months, 1972–2019</span></th>
       {% for s in signals %}
       <td>{{ s.false_alarm|round|int }}%</td>
       {% endfor %}

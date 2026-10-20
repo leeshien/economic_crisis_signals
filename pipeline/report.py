@@ -102,12 +102,84 @@ def build_report(data: dict, today: dt.date, raw_dir=None) -> dict:
         "signals": signals,
         "sahm": SAHM,
         "crises": crises,
-        "today": _today(lights, data, today, crises, raw_dir),
+        "today": _today(lights, metrics, data, today, crises, raw_dir),
     }
 
 
-def _today(lights, data, today, crises, raw_dir):
+_OP_WORDS = {">": "above", ">=": "at or above", "<": "below", "<=": "at or below"}
+
+
+def fmt_value(v: float, unit: str, sign: bool = True) -> str:
+    """Display a metric value: '+0.17 pts', '-12.4%', '31.2', '0.3 hrs'."""
+    if unit == "pts":
+        return f"{v:+.2f} pts" if sign else f"{v:.2f} pts"
+    if unit == "%":
+        return f"{v:+.1f}%" if sign else f"{v:.1f}%"
+    if unit == "hrs":
+        return f"{v:.1f} hrs"
+    return f"{v:.1f}"
+
+
+def _detail(sid: str, d: dict, m) -> str:
+    """The underlying figures behind a signal's latest value, in words."""
+    def at(key, t=m):
+        return float(d[key].dropna().loc[:t].iloc[-1])
+
+    def ago(n):
+        return m - pd.DateOffset(months=n)
+
+    if sid == "yield_curve":
+        return f"10-year yield {at('GS10'):.2f}% minus 3-month yield {at('TB3MS'):.2f}%"
+    if sid == "fed_hiking":
+        return f"Fed funds rate {at('FEDFUNDS'):.2f}% now, {at('FEDFUNDS', ago(18)):.2f}% in {ago(18):%b %Y}"
+    if sid == "inflation":
+        return f"Consumer price index {at('CPIAUCSL'):.1f} now, {at('CPIAUCSL', ago(12)):.1f} in {ago(12):%b %Y}"
+    if sid == "oil_shock":
+        return f"US crude ${at('WTISPLC'):.2f} a barrel now, ${at('WTISPLC', ago(12)):.2f} in {ago(12):%b %Y}"
+    if sid == "credit_spread":
+        spread = (d["BAA"] - d["GS10"]).dropna().loc[:m]
+        return (f"Baa bonds {at('BAA'):.2f}% minus 10-year {at('GS10'):.2f}% = {spread.iloc[-1]:.2f} pts; "
+                f"lowest in 24 months {spread.iloc[-24:].min():.2f} pts")
+    if sid == "corp_debt":
+        pct = lambda t: at("BCNSDODNS", t) / 1000 / at("GDP", t) * 100
+        return f"Company debt {pct(m):.1f}% of GDP now, {pct(ago(36)):.1f}% in {ago(36):%b %Y}"
+    if sid == "cape":
+        return f"Shiller CAPE {at('CAPE'):.1f} (last published {m:%b %Y})"
+    if sid == "profits":
+        return f"Profits ${at('CP') / 1000:.2f} trillion a year now, ${at('CP', ago(12)) / 1000:.2f} trillion in {ago(12):%b %Y}"
+    if sid == "housing":
+        avg = d["HOUST"].rolling(3).mean().dropna()
+        return (f"{avg.loc[:m].iloc[-1] / 1000:.2f} million homes a year (3-month average) now, "
+                f"{avg.loc[:ago(12)].iloc[-1] / 1000:.2f} million in {ago(12):%b %Y}")
+    if sid == "factory_hours":
+        hrs = d["AWHMAN"].dropna().loc[:m]
+        return f"Factory week {hrs.iloc[-1]:.1f} hours now; 12-month high {hrs.iloc[-12:].max():.1f} hours"
+    return ""
+
+
+def _reading(s: dict, metric_s: pd.Series, data: dict, latest) -> dict:
+    """Latest value of a signal's metric, its trigger, and how far the value is from it."""
+    m = metric_s.dropna()
+    v, t, unit = float(m.iloc[-1]), s["threshold"], s["unit"]
+    rising = s["op"] in (">", ">=")
+    gap = (t - v) if rising else (v - t)  # > 0: still needs to move this far to switch on
+    start = latest - pd.DateOffset(months=TIMELINE_BEFORE)
+    return {
+        "value": round(v, 4), "value_text": fmt_value(v, unit),
+        "value_month": m.index[-1].strftime("%b %Y"),
+        "trigger_text": f"{_OP_WORDS[s['op']]} {fmt_value(t, unit, sign=False)}",
+        # a gap in a % measure is in percentage points
+        "gap_text": f"{abs(gap):.1f} pts" if unit == "%" else fmt_value(abs(gap), unit, sign=False),
+        "direction": ("rise" if rising else "fall"),
+        "detail": _detail(s["id"], data, m.index[-1]),
+        "spark": {"id": s["id"], "name": s["name"], "label": s["metric_label"],
+                  "threshold": t, "op": s["op"], "points": _points(m, start, latest, latest)},
+    }
+
+
+def _today(lights, metrics, data, today, crises, raw_dir):
     today_ts = pd.Timestamp(today)
+    latest = max(score.month_floor(lights[s["id"]].dropna().index[-1]) for s in SIGNALS)
     rows, on_count, valid = [], 0, 0
     for s in SIGNALS:
         lt = lights[s["id"]].dropna()
@@ -121,12 +193,14 @@ def _today(lights, data, today, crises, raw_dir):
             on_count += int(on)
         since = score.run_start(lt, lt.index[-1]) if on and not stale else None
         rows.append({
-            "id": s["id"], "name": s["name"], "on": on, "stale": stale,
+            "id": s["id"], "name": s["name"], "group": s["group"], "on": on, "stale": stale,
             "as_of": as_of.strftime("%Y-%m"), "age_days": age,
             "on_since": since.strftime("%Y-%m") if since is not None else None,
+            "on_months": score.months_between(since, lt.index[-1]) + 1 if since is not None else None,
+            "what": s["what"], "rule": s["rule"],
+            **_reading(s, metrics[s["id"]], data, latest),
         })
     lit_at_peak = [c["early_count"] + c["chronic_count"] for c in crises]
-    latest = max(score.month_floor(lights[s["id"]].dropna().index[-1]) for s in SIGNALS)
     tl = _timeline(lights, None, data, latest, latest, latest - pd.DateOffset(months=24), end=latest)
     # On the today page a light is red only if it is on in the latest month (matches the table).
     by_id = {r["id"]: r for r in rows}

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% from "_macros.html" import legend %}
-{% block title %}{{ crisis.name }} — MacroPulse{% endblock %}
+{% block title %}{{ crisis.name }} — Economic Crisis Signals{% endblock %}
 {% block main %}
 <section class="crisis-head">
   <p class="eyebrow"><a href="{{ root }}index.html">Scoreboard</a> / Crash</p>
@@ -33,7 +33,7 @@
     {%- if crisis.chronic_count %}, and {{ crisis.chronic_count }} had already been on for years{% endif %}.
     The shaded band is the warning window we count.</p>
   {{ legend() }}
-  <div class="chart-scroll">{{ timeline_svg(crisis.timeline, "peak")|safe }}</div>
+  <div class="panel chart-scroll">{{ timeline_svg(crisis.timeline, "peak")|safe }}</div>
 </section>
 
 <section>

@@ -1,27 +1,50 @@
 {% extends "base.html" %}
-{% from "_macros.html" import legend, scoreboard_table %}
-{% block title %}MacroPulse — Did the crash give warnings?{% endblock %}
+{% from "_macros.html" import legend, scoreboard_table, dots %}
+{% block title %}Economic Crisis Signals — did the crash give warnings?{% endblock %}
 {% block main %}
 <section class="hero">
-  <h1>Every crash left warning signs.<br>Could you have seen them coming?</h1>
-  <p class="lede">We checked {{ signals|length }} economic warning lights against {{ crises|length }} US stock-market
-    crashes since 1973, using the same fixed rule for every crash.</p>
-  <a class="today-badge" href="today.html">Today: <strong>{{ today.on }} of {{ today.valid }}</strong> lights on →</a>
+  <div>
+    <h1>Every crash has a story.<br>Did the economy warn us first?</h1>
+    <p class="lede">We checked {{ signals|length }} economic warning lights against {{ crises|length }} US stock-market
+      crashes since 1973, using the same fixed rule for every crash.</p>
+  </div>
+  <a class="today-card" href="today.html">
+    <span class="kicker">Lights today</span>
+    <span class="num">{{ today.on }} of {{ today.valid }} on</span>
+    <span class="muted">At past market peaks: {{ today.typical_min }}–{{ today.typical_max }} lights on</span>
+    <span class="go">See each light now →</span>
+  </a>
 </section>
 
 <section>
   <h2>The scoreboard</h2>
-  <p>Each cell shows whether a light switched on <strong>before the market peaked</strong>, and how many months
-    early. Click a crash to see its story.</p>
-  {{ legend() }}
-  {{ scoreboard_table(crises, signals, root) }}
+  <p class="section-intro">Each cell shows whether a light switched on <strong>before the market peaked</strong>, and how
+    many months early. Click a crash to see its story, or a light to see its rule.</p>
+  <div class="panel">
+    {{ legend() }}
+    {{ scoreboard_table(crises, signals, root, groups) }}
+  </div>
   <p class="takeaway">No single light called every crash, and several are on in normal times too.
     What matters is <strong>how many lights are on at once</strong>.</p>
 </section>
 
 <section>
+  <h2>The {{ crises|length }} crashes</h2>
+  <div class="cards crisis-cards">
+    {% for c in crises %}
+    <a class="card crisis-card" href="crisis/{{ c.id }}.html">
+      <span class="crisis-name">{{ c.name }}</span>
+      <span class="crisis-fall">{{ c.fall_pct }}%</span>
+      {{ dots(c, signals) }}
+      <span class="muted">{{ c.early_count }} of {{ signals|length }} lights warned{% if c.chronic_count %} · {{ c.chronic_count }} long on{% endif %}</span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section>
   <h2>The {{ signals|length }} warning lights</h2>
-  {% for gid, gname in [("rates","Money & rates"),("prices","Prices"),("credit","Credit"),("markets","Markets"),("economy","Real economy")] %}
+  {% for gid, gname in groups.items() %}
   <h3 class="group-title">{{ gname }}</h3>
   <div class="cards">
     {% for s in signals if s.group == gid %}
@@ -36,18 +59,5 @@
     {% endfor %}
   </div>
   {% endfor %}
-</section>
-
-<section>
-  <h2>The {{ crises|length }} crashes</h2>
-  <div class="cards crisis-cards">
-    {% for c in crises %}
-    <a class="card crisis-card" href="crisis/{{ c.id }}.html">
-      <span class="crisis-name">{{ c.name }}</span>
-      <span class="crisis-fall">{{ c.fall_pct }}%</span>
-      <span class="muted">{{ c.early_count }} of {{ signals|length }} lights warned</span>
-    </a>
-    {% endfor %}
-  </div>
 </section>
 {% endblock %}
