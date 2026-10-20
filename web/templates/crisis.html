@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% from "_macros.html" import legend %}
+{% block title %}{{ crisis.name }} — MacroPulse{% endblock %}
+{% block main %}
+<section class="crisis-head">
+  <p class="eyebrow"><a href="{{ root }}index.html">Scoreboard</a> / Crash</p>
+  <h1>{{ crisis.name }}</h1>
+  <ul class="stats">
+    <li><span>S&amp;P 500</span><strong>{{ crisis.fall_pct }}%</strong></li>
+    <li><span>Peak → bottom</span><strong>{{ crisis.duration_months }} months</strong></li>
+    {% if crisis.peak_unemployment %}<li><span>Unemployment peaked at</span><strong>{{ crisis.peak_unemployment }}%</strong></li>{% endif %}
+    <li><span>Market peak</span><strong>{{ crisis.peak }}</strong></li>
+  </ul>
+  {% if crisis.notes %}<p class="note">{{ crisis.notes }}</p>{% endif %}
+</section>
+
+<section>
+  <h2>1 · Why it happened</h2>
+  <ol class="chain">
+    {% for kind, title, desc in crisis.cause_chain %}
+    <li class="chain-step{% if loop.first %} chain-root{% elif loop.last %} chain-outcome{% endif %}">
+      <span class="chain-kind">{{ kind }}</span>
+      <strong>{{ title }}</strong>
+      <p>{{ desc }}</p>
+    </li>
+    {% endfor %}
+  </ol>
+</section>
+
+<section>
+  <h2>2 · What warned us</h2>
+  <p><strong>{{ crisis.early_count }} of {{ signals|length }}</strong> lights switched on before the peak
+    {%- if crisis.chronic_count %}, and {{ crisis.chronic_count }} had already been on for years{% endif %}.
+    The shaded band is the warning window we count.</p>
+  {{ legend() }}
+  <div class="chart-scroll">{{ timeline_svg(crisis.timeline, "peak")|safe }}</div>
+</section>
+
+<section>
+  <h2>3 · Signal by signal</h2>
+  <div class="cards spark-cards">
+    {% for sm in crisis.small_multiples %}
+    {% set cell = crisis.cells[sm.id] %}
+    <article class="card">
+      <h4>{{ sm.name }} <span class="pill cell-{{ cell.state }}">{{ cell_text(cell) or "did not fire" }}</span></h4>
+      <p class="muted">{{ sm.label }}. Dashed line = rule threshold; shaded = light on.</p>
+      {{ sparkline_svg(sm)|safe }}
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="verdict">
+  <h2>4 · The lesson</h2>
+  <p class="lesson">{{ crisis.lesson }}</p>
+  <h3>Sources</h3>
+  <ul class="sources">{% for u in crisis.sources %}<li><a href="{{ u }}">{{ u }}</a></li>{% endfor %}</ul>
+</section>
+
+<nav class="prev-next">
+  {% if prev %}<a href="{{ prev.id }}.html">← {{ prev.name }}</a>{% else %}<span></span>{% endif %}
+  {% if next %}<a href="{{ next.id }}.html">{{ next.name }} →</a>{% endif %}
+</nav>
+{% endblock %}

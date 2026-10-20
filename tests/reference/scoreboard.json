@@ -1,0 +1,296 @@
+{
+ "1973": {
+  "cape": {
+   "months": null,
+   "state": "none"
+  },
+  "corp_debt": {
+   "months": 34,
+   "state": "chronic"
+  },
+  "credit_spread": {
+   "months": 31,
+   "state": "chronic"
+  },
+  "factory_hours": {
+   "months": 13,
+   "state": "late"
+  },
+  "fed_hiking": {
+   "months": 2,
+   "state": "late"
+  },
+  "housing": {
+   "months": 9,
+   "state": "late"
+  },
+  "inflation": {
+   "months": 2,
+   "state": "late"
+  },
+  "oil_shock": {
+   "months": 12,
+   "state": "late"
+  },
+  "profits": {
+   "months": null,
+   "state": "none"
+  },
+  "yield_curve": {
+   "months": 5,
+   "state": "late"
+  }
+ },
+ "1980": {
+  "cape": {
+   "months": null,
+   "state": "none"
+  },
+  "corp_debt": {
+   "months": null,
+   "state": "none"
+  },
+  "credit_spread": {
+   "months": 17,
+   "state": "early"
+  },
+  "factory_hours": {
+   "months": 19,
+   "state": "early"
+  },
+  "fed_hiking": {
+   "months": 1,
+   "state": "early"
+  },
+  "housing": {
+   "months": 11,
+   "state": "early"
+  },
+  "inflation": {
+   "months": 92,
+   "state": "chronic"
+  },
+  "oil_shock": {
+   "months": 15,
+   "state": "early"
+  },
+  "profits": {
+   "months": 5,
+   "state": "early"
+  },
+  "yield_curve": {
+   "months": 23,
+   "state": "early"
+  }
+ },
+ "1990": {
+  "cape": {
+   "months": null,
+   "state": "none"
+  },
+  "corp_debt": {
+   "months": 55,
+   "state": "chronic"
+  },
+  "credit_spread": {
+   "months": 12,
+   "state": "early"
+  },
+  "factory_hours": {
+   "months": 8,
+   "state": "early"
+  },
+  "fed_hiking": {
+   "months": 23,
+   "state": "early"
+  },
+  "housing": {
+   "months": null,
+   "state": "none"
+  },
+  "inflation": {
+   "months": 24,
+   "state": "early"
+  },
+  "oil_shock": {
+   "months": 2,
+   "state": "late"
+  },
+  "profits": {
+   "months": 10,
+   "state": "early"
+  },
+  "yield_curve": {
+   "months": null,
+   "state": "none"
+  }
+ },
+ "2000": {
+  "cape": {
+   "months": 43,
+   "state": "chronic"
+  },
+  "corp_debt": {
+   "months": 18,
+   "state": "early"
+  },
+  "credit_spread": {
+   "months": 18,
+   "state": "early"
+  },
+  "factory_hours": {
+   "months": 5,
+   "state": "late"
+  },
+  "fed_hiking": {
+   "months": 3,
+   "state": "late"
+  },
+  "housing": {
+   "months": null,
+   "state": "none"
+  },
+  "inflation": {
+   "months": null,
+   "state": "none"
+  },
+  "oil_shock": {
+   "months": 7,
+   "state": "early"
+  },
+  "profits": {
+   "months": 3,
+   "state": "late"
+  },
+  "yield_curve": {
+   "months": 5,
+   "state": "late"
+  }
+ },
+ "2008": {
+  "cape": {
+   "months": 23,
+   "state": "early"
+  },
+  "corp_debt": {
+   "months": 2,
+   "state": "late"
+  },
+  "credit_spread": {
+   "months": 1,
+   "state": "early"
+  },
+  "factory_hours": {
+   "months": 8,
+   "state": "early"
+  },
+  "fed_hiking": {
+   "months": 31,
+   "state": "chronic"
+  },
+  "housing": {
+   "months": 12,
+   "state": "early"
+  },
+  "inflation": {
+   "months": 1,
+   "state": "late"
+  },
+  "oil_shock": {
+   "months": 1,
+   "state": "late"
+  },
+  "profits": {
+   "months": 7,
+   "state": "early"
+  },
+  "yield_curve": {
+   "months": 14,
+   "state": "early"
+  }
+ },
+ "2020": {
+  "cape": {
+   "months": 47,
+   "state": "chronic"
+  },
+  "corp_debt": {
+   "months": 1,
+   "state": "late"
+  },
+  "credit_spread": {
+   "months": 14,
+   "state": "early"
+  },
+  "factory_hours": {
+   "months": 15,
+   "state": "early"
+  },
+  "fed_hiking": {
+   "months": null,
+   "state": "none"
+  },
+  "housing": {
+   "months": null,
+   "state": "none"
+  },
+  "inflation": {
+   "months": null,
+   "state": "none"
+  },
+  "oil_shock": {
+   "months": null,
+   "state": "none"
+  },
+  "profits": {
+   "months": 17,
+   "state": "early"
+  },
+  "yield_curve": {
+   "months": 8,
+   "state": "early"
+  }
+ },
+ "2022": {
+  "cape": {
+   "months": 21,
+   "state": "chronic"
+  },
+  "corp_debt": {
+   "months": 22,
+   "state": "chronic"
+  },
+  "credit_spread": {
+   "months": 4,
+   "state": "late"
+  },
+  "factory_hours": {
+   "months": 5,
+   "state": "late"
+  },
+  "fed_hiking": {
+   "months": 6,
+   "state": "late"
+  },
+  "housing": {
+   "months": null,
+   "state": "none"
+  },
+  "inflation": {
+   "months": 9,
+   "state": "early"
+  },
+  "oil_shock": {
+   "months": 10,
+   "state": "early"
+  },
+  "profits": {
+   "months": null,
+   "state": "none"
+  },
+  "yield_curve": {
+   "months": null,
+   "state": "none"
+  }
+ }
+}

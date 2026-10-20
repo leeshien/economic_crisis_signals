@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% from "_macros.html" import legend, scoreboard_table %}
+{% block title %}MacroPulse — Did the crash give warnings?{% endblock %}
+{% block main %}
+<section class="hero">
+  <h1>Every crash left warning signs.<br>Could you have seen them coming?</h1>
+  <p class="lede">We checked {{ signals|length }} economic warning lights against {{ crises|length }} US stock-market
+    crashes since 1973, using the same fixed rule for every crash.</p>
+  <a class="today-badge" href="today.html">Today: <strong>{{ today.on }} of {{ today.valid }}</strong> lights on →</a>
+</section>
+
+<section>
+  <h2>The scoreboard</h2>
+  <p>Each cell shows whether a light switched on <strong>before the market peaked</strong>, and how many months
+    early. Click a crash to see its story.</p>
+  {{ legend() }}
+  {{ scoreboard_table(crises, signals, root) }}
+  <p class="takeaway">No single light called every crash, and several are on in normal times too.
+    What matters is <strong>how many lights are on at once</strong>.</p>
+</section>
+
+<section>
+  <h2>The {{ signals|length }} warning lights</h2>
+  {% for gid, gname in [("rates","Money & rates"),("prices","Prices"),("credit","Credit"),("markets","Markets"),("economy","Real economy")] %}
+  <h3 class="group-title">{{ gname }}</h3>
+  <div class="cards">
+    {% for s in signals if s.group == gid %}
+    <article class="card" id="signal-{{ s.id }}">
+      <h4>{{ s.name }}</h4>
+      <p><strong>What:</strong> {{ s.what }}</p>
+      <p><strong>Why it matters:</strong> {{ s.why }}</p>
+      <p class="rule"><strong>Rule:</strong> {{ s.rule }}</p>
+      <p class="muted">On in {{ s.false_alarm|round|int }}% of months in 1972–2019, crash or not.
+        Source: {% for u in s.sources %}<a href="{{ u }}">{{ u.split('/')[-1] or u }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</p>
+    </article>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</section>
+
+<section>
+  <h2>The {{ crises|length }} crashes</h2>
+  <div class="cards crisis-cards">
+    {% for c in crises %}
+    <a class="card crisis-card" href="crisis/{{ c.id }}.html">
+      <span class="crisis-name">{{ c.name }}</span>
+      <span class="crisis-fall">{{ c.fall_pct }}%</span>
+      <span class="muted">{{ c.early_count }} of {{ signals|length }} lights warned</span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}MacroPulse{% endblock %}</title>
+<meta name="description" content="Did past stock-market crashes give warning signs? Ten economic signals checked against seven US crashes since 1973.">
+<link rel="stylesheet" href="{{ root }}static/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="logo" href="{{ root }}index.html">MacroPulse</a>
+  <nav>
+    <a href="{{ root }}index.html"{% if page == "index.html" %} aria-current="page"{% endif %}>Scoreboard</a>
+    <a href="{{ root }}today.html"{% if page == "today.html" %} aria-current="page"{% endif %}>Lights today</a>
+    <a href="{{ root }}method.html"{% if page == "method.html" %} aria-current="page"{% endif %}>Method</a>
+  </nav>
+</header>
+<main>
+{% block main %}{% endblock %}
+</main>
+<footer class="site-footer">
+  <p><strong>Education only — not financial advice.</strong> Past warning signs do not predict future markets.</p>
+  <p>Data: <a href="https://fred.stlouisfed.org/">FRED, Federal Reserve Bank of St. Louis</a> ·
+     <a href="http://www.econ.yale.edu/~shiller/data.htm">Robert Shiller (CAPE)</a> ·
+     recessions from <a href="https://www.nber.org/research/business-cycle-dating">NBER</a>.
+     Built {{ report.generated }}. <a href="{{ root }}method.html">How this works</a>.</p>
+</footer>
+</body>
+</html>

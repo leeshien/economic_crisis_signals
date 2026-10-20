@@ -1,0 +1,44 @@
+{% macro legend() %}
+<ul class="legend">
+  <li><span class="sw sw-early"></span>Warned: switched on before the peak (months early)</li>
+  <li><span class="sw sw-chronic"></span>Long on: already on for years</li>
+  <li><span class="sw sw-late"></span>Late: fired only after the peak</li>
+  <li><span class="sw sw-none"></span>Did not fire</li>
+</ul>
+{% endmacro %}
+
+{% macro scoreboard_table(crises, signals, root) %}
+<div class="table-scroll">
+<table class="scoreboard">
+  <thead>
+    <tr>
+      <th scope="col" class="crisis-col">Crash (S&amp;P 500 fall)</th>
+      {% for s in signals %}
+      <th scope="col"><a href="{{ root }}index.html#signal-{{ s.id }}">{{ s.name }}</a></th>
+      {% endfor %}
+      <th scope="col">Warned</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in crises %}
+    <tr>
+      <th scope="row" class="crisis-col"><a href="{{ root }}crisis/{{ c.id }}.html">{{ c.short }}</a>
+        <span class="fall">{{ c.fall_pct }}%</span></th>
+      {% for s in signals %}
+      {% set cell = c.cells[s.id] %}
+      <td class="cell cell-{{ cell.state }}" title="{{ cell_title(cell, s.name) }}">{{ cell_text(cell) }}</td>
+      {% endfor %}
+      <td class="count"><strong>{{ c.early_count }}</strong> of {{ signals|length }}</td>
+    </tr>
+    {% endfor %}
+    <tr class="false-alarm-row">
+      <th scope="row" class="crisis-col">On in normal times<span class="fall">% of months, 1972–2019</span></th>
+      {% for s in signals %}
+      <td>{{ s.false_alarm|round|int }}%</td>
+      {% endfor %}
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+{% endmacro %}
