@@ -90,3 +90,9 @@ def test_quarterly_redated_to_quarter_end():
 def test_every_signal_has_a_metric():
     for s in SIGNALS + [SAHM]:
         assert s["id"] in rules.METRICS
+
+
+def test_shiller_link_found_on_page():
+    from pipeline.fetch import shiller_xls_url
+    html = '<a href="//img1.wsimg.com/blobby/go/x/downloads/y/ie_data.xls?ver=17">Download</a>'
+    assert shiller_xls_url(html) == "https://img1.wsimg.com/blobby/go/x/downloads/y/ie_data.xls?ver=17"

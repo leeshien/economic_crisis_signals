@@ -57,8 +57,8 @@ how back-to-back crashes (2020 → 2022) are handled.
 
 - **FRED** (Federal Reserve Bank of St. Louis): interest rates, prices, credit, debt, profits,
   housing, jobs, recession dates, recent S&P 500.
-- **Robert Shiller**: long-run S&P 500 and CAPE. Shiller's file has not been updated since
-  September 2023, so the valuation light shows *no current data* on the Lights today page.
+- **Robert Shiller** ([shillerdata.com](https://shillerdata.com/)): long-run S&P 500 and CAPE,
+  updated monthly.
 - Crash peak and bottom dates were checked against daily S&P 500 closes.
 
 No API keys are needed. A GitHub Action downloads fresh data every Monday, runs the tests, rebuilds

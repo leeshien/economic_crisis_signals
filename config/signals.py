@@ -84,7 +84,7 @@ SIGNALS = [
         "why": "Very high valuations mean prices depend on optimism; they show a bubble "
                "but not when it will burst.",
         "rule": "On when the Shiller CAPE ratio is above 25.",
-        "sources": ["http://www.econ.yale.edu/~shiller/data.htm"],
+        "sources": ["https://shillerdata.com/"],
     },
     {
         "id": "profits", "name": "Profits falling", "group": "economy",
