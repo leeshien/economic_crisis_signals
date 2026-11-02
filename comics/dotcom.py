@@ -10,7 +10,6 @@ DATA = Path(__file__).resolve().parent / "data"
 FALLS = json.loads((DATA / "dotcom_falls.json").read_text(encoding="utf-8"))
 NASDAQ = json.loads((DATA / "nasdaq_monthly.json").read_text(encoding="utf-8"))
 
-ISSUE = "ISSUE 4 OF 7"
 SLUG = "2000-dotcom"
 
 
@@ -62,7 +61,6 @@ def cover() -> str:
         # masthead strip
         + f'<rect x="0" y="0" width="{W}" height="54" fill="{INK}"/>'
         + f'<text x="30" y="37" style="{HEAD}" font-size="26" fill="{YELLOW}" letter-spacing="1.5">ECONOMIC CRISIS SIGNALS</text>'
-        + f'<text x="{W - 30}" y="37" style="{HEAD}" font-size="26" fill="#fff" text-anchor="end">{ISSUE}</text>'
         + art.title(W / 2, 178, "THE DOT-COM", size=124, rot=-3)
         + art.title(W / 2, 300, "BUBBLE!", size=150, fill=BLUE, rot=-3)
         + f'<g transform="rotate(4 700 352)"><rect x="610" y="326" width="190" height="50" fill="{INK}"/>'

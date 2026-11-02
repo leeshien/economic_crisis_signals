@@ -14,7 +14,6 @@ FALLS = json.loads((DATA / "covid_falls.json").read_text(encoding="utf-8"))
 SERIES = json.loads((DATA / "covid_series.json").read_text(encoding="utf-8"))
 
 SLUG = "2020-covid"
-ISSUE = "ISSUE 6 OF 7"
 CRISIS_ID = "2020"
 ORDER = ["cover", "machine", "good-times", "boom-to-danger", "warning-signs", "timeline-up", "timeline-down",
          "what-popped", "map", "fixing-rules", "lesson", "sources"]

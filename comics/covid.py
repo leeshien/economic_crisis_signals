@@ -4,7 +4,7 @@ from comics import covid_story as st
 from comics.art import INK, RED, YELLOW, BLUE, ORANGE, HEAD, BODY, W, H, text_block, wrap
 from comics.kit import GREEN, page, head, num_footer, medallion, step_badge, jargon
 
-SLUG, ISSUE = st.SLUG, st.ISSUE
+SLUG = st.SLUG
 pno = lambda name: kit.page_no(st, name)
 
 
@@ -41,7 +41,6 @@ def cover() -> str:
             + f'<rect width="{W}" height="{H}" fill="url(#dots-big)"/>'
             + f'<rect x="0" y="0" width="{W}" height="54" fill="{INK}"/>'
             + f'<text x="30" y="37" style="{HEAD}" font-size="26" fill="{YELLOW}" letter-spacing="1.5">ECONOMIC CRISIS SIGNALS</text>'
-            + f'<text x="{W - 30}" y="37" style="{HEAD}" font-size="26" fill="#fff" text-anchor="end">{ISSUE}</text>'
             + art.title(W / 2, 170, "THE 2020", size=110, rot=-3)
             + art.title(W / 2, 286, "COVID CRASH!", size=112, fill=BLUE, rot=-3)
             + f'<g transform="rotate(4 690 344)"><rect x="560" y="318" width="250" height="50" fill="{INK}"/>'

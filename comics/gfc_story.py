@@ -13,7 +13,6 @@ FALLS = json.loads((DATA / "gfc_falls.json").read_text(encoding="utf-8"))
 SERIES = json.loads((DATA / "gfc_series.json").read_text(encoding="utf-8"))
 
 SLUG = "2008-gfc"
-ISSUE = "ISSUE 5 OF 7"
 CRISIS_ID = "2008"
 ORDER = ["cover", "machine", "good-times", "boom-to-danger", "warning-signs", "timeline-up", "timeline-down",
          "what-popped", "map", "fixing-rules", "lesson", "sources"]
