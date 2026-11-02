@@ -157,3 +157,7 @@ svg.timeline { min-width: 720px; }
 .trigger dt { color: var(--muted); }
 .trigger dd { margin: 0; font-weight: 600; }
 .trigger .near { color: var(--early); }
+
+/* Link to a crash's comic PDF */
+.comic-link a { display: inline-block; padding: 8px 14px; border-radius: 8px; background: var(--early); color: var(--early-text);
+  font-weight: 700; text-decoration: none; }

@@ -24,6 +24,8 @@ crashes (1973, 1980, 1990, 2000, 2008, 2020, 2022). For each crash it shows:
 
 A **Lights today** page applies the same rules to the latest data.
 
+Each crash also gets a **comic** (PDF): the good times that fooled people, how the bubble formed, a timeline, what popped it, a world map of how hard each country's stock market fell, and the rules governments changed afterwards. Every fact is checked and sourced on the last page. Out so far: [The Dot-com Bubble](web/static/comics/2000-dotcom.pdf), [The 2008 Financial Crisis](web/static/comics/2008-gfc.pdf) and [The 2020 Covid Crash](web/static/comics/2020-covid.pdf).
+
 ## What the history shows
 
 - **Some crashes were clearly signalled, some were not.** In 1980, 7 of the 10 lights came on before
@@ -76,6 +78,8 @@ python -m pipeline.fetch                  # download FRED + Shiller data into da
 python -m pytest -q                       # unit tests + frozen reference scoreboard
 python -m web.build                       # writes dist/ and docs/scoreboard.svg
 python tools/print_scoreboard.py          # the scoreboard as text
+python -m comics.build --story gfc        # one comic PDF -> web/static/comics/ (needs Chrome/Chromium)
+                                          # stories: dotcom, gfc, covid
 ```
 
 Open `dist/index.html` in a browser to view the site.
@@ -94,6 +98,7 @@ matches `tests/reference/scoreboard.json`. Review the change, then run
 | `pipeline/score.py` | early / long on / late / did not fire, lead times, false-alarm rate |
 | `pipeline/report.py` | assembles everything the pages show |
 | `web/` | Jinja2 templates, server-side SVG charts, CSS → `dist/` |
+| `comics/` | comic PDFs: story facts + sources, page art, world map, Chrome PDF build |
 | `docs/scoreboard.svg` | scoreboard image for this README (written by the build) |
 | `.github/workflows/refresh.yml` | weekly fetch → test → build → GitHub Pages |
 

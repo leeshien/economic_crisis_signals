@@ -12,6 +12,7 @@
     <li><span>Market peak</span><strong>{{ crisis.peak }}</strong></li>
   </ul>
   {% if crisis.notes %}<p class="note">{{ crisis.notes }}</p>{% endif %}
+  {% if crisis.get("comic") %}<p class="comic-link"><a href="{{ root }}static/comics/{{ crisis.comic }}">Read the comic: the whole story as a comic book (PDF) →</a></p>{% endif %}
 </section>
 
 <section>

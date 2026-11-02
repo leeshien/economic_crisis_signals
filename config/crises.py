@@ -115,6 +115,7 @@ CRISES = [
         ],
         "notes": "The S&P 500 made an almost equal second high on 1 September 2000 (1520 vs "
                  "1527). This site always uses the highest close.",
+        "comic": "2000-dotcom.pdf",
         "lesson": "A bubble can be obvious for years — the valuation light was on long "
                   "before — but its timing is not. Rising corporate borrowing and bond "
                   "spreads gave the nearer warning.",
@@ -142,6 +143,7 @@ CRISES = [
              "Stocks fell about 57%; recession from December 2007 to June 2009, "
              "unemployment reached 10%."),
         ],
+        "comic": "2008-gfc.pdf",
         "notes": "The trouble started in mortgage credit, so corporate bond spreads stayed "
                  "calm until just before the peak.",
         "lesson": "Housing gave the clearest warning — the stress showed up where the "
@@ -154,6 +156,7 @@ CRISES = [
         "peak": "2020-02-19", "peak_close": 3386.15,
         "bottom": "2020-03-23", "bottom_close": 2237.40,
         "dates_checked": True, "date_source": "https://fred.stlouisfed.org/series/SP500",
+        "comic": "2020-covid.pdf",
         "cause_chain": [
             ("Root cause", "Late-cycle economy",
              "After a decade-long expansion, corporate debt was at record levels."),
